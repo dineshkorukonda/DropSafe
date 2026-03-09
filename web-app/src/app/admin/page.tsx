@@ -18,9 +18,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-// --- Mock Data ---
+// --- Initial Mock Data ---
 
-const MOCK_WORKERS = [
+const INITIAL_WORKERS = [
   { id: "W-8472", name: "Ravi Kumar", city: "Hyderabad", platform: "Zomato", avgIncome: 5000, activeCoverage: "Monsoon", premium: 45, status: "Protected", riskScore: 82 },
   { id: "W-9102", name: "Suresh Menon", city: "Chennai", platform: "Swiggy", avgIncome: 4200, activeCoverage: "Heatwave", premium: 38, status: "Protected", riskScore: 76 },
   { id: "W-3391", name: "Amit Singh", city: "Delhi", platform: "Blinkit", avgIncome: 6100, activeCoverage: "Pollution", premium: 55, status: "Protected", riskScore: 94 },
@@ -28,19 +28,75 @@ const MOCK_WORKERS = [
   { id: "W-7729", name: "Karthik R.", city: "Bangalore", platform: "Swiggy", avgIncome: 7000, activeCoverage: "Monsoon", premium: 50, status: "Protected", riskScore: 68 },
 ];
 
-const MOCK_EVENTS = [
+const INITIAL_EVENTS = [
   { id: "EV-HYD-01", type: "Rainstorm", city: "Hyderabad", severity: "High (65mm/hr)", status: "Active", time: "14 mins ago", affected: 4102 },
   { id: "EV-DEL-44", type: "Pollution", city: "Delhi", severity: "Critical (AQI 450)", status: "Active", time: "2 hrs ago", affected: 12050 },
   { id: "EV-CHE-12", type: "Heatwave", city: "Chennai", severity: "Warning (42°C)", status: "Monitoring", time: "5 hrs ago", affected: 0 },
 ];
 
-const MOCK_FRAUD_LOGS = [
+const INITIAL_FRAUD_LOGS = [
   { id: "CLM-9921", worker: "W-8472", type: "Location Mismatch", details: "Pinged from Vijayawada during Hyderabad flood event.", confidence: "98%", action: "Flagged & Blocked" },
   { id: "CLM-3100", worker: "W-1120", type: "Duplicate IP", details: "3 claims filed from identical device node in 10 mins.", confidence: "85%", action: "Requires Manual Review" },
 ];
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Dynamic State
+  const [workers, setWorkers] = useState(INITIAL_WORKERS);
+  const [events, setEvents] = useState(INITIAL_EVENTS);
+  const [fraudLogs, setFraudLogs] = useState(INITIAL_FRAUD_LOGS);
+  
+  // Analytics State
+  const [payoutsYtd, setPayoutsYtd] = useState(14000000); // 1.4Cr
+  const [totalClaims, setTotalClaims] = useState(18200);
+
+  // Interactions
+  const triggerNewEvent = () => {
+    // 1. Create a new event
+    const newEvent = {
+       id: `EV-MUM-${Math.floor(Math.random() * 100)}`,
+       type: "Rainstorm",
+       city: "Mumbai",
+       severity: "Critical (80mm/hr)",
+       status: "Active",
+       time: "Just now",
+       affected: 1450 // base
+    };
+
+    // 2. Scan workers in DB in Mumbai to simulate payouts
+    let newAffected = 1450;
+    const updatedWorkers = workers.map(w => {
+      if (w.city === "Mumbai" && w.status === "Uninsured") {
+          // Worker was unprotected, log a missed opportunity or auto-protect them for demo
+          newAffected += 1;
+          return { ...w, status: "Protected" as const, activeCoverage: "Dynamic Issue" };
+      }
+      return w;
+    });
+
+    newEvent.affected = newAffected;
+
+    // 3. Update all states
+    setEvents([newEvent, ...events]);
+    setWorkers(updatedWorkers);
+    
+    // Increment global analytics
+    setTotalClaims(prev => prev + newAffected);
+    // Arbitrary estimate of payout size e.g. 1450 claims * 2500 INR
+    setPayoutsYtd(prev => prev + (newAffected * 2500));
+  };
+
+  const activeEventCount = events.filter(e => e.status === "Active").length;
+  const formatINR = (value: number) => {
+    if (value >= 10000000) return `₹${(value / 10000000).toFixed(2)}Cr`;
+    if (value >= 100000) return `₹${(value / 100000).toFixed(2)}L`;
+    return `₹${value.toLocaleString()}`;
+  };
+
+  const resolveFraudLog = (id: string) => {
+    setFraudLogs(fraudLogs.filter(log => log.id !== id));
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-950 flex flex-col md:flex-row pb-20 md:pb-0 selection:bg-zinc-200">
@@ -126,19 +182,22 @@ export default function AdminDashboard() {
                 <Card className="shadow-sm border-zinc-200">
                   <CardHeader className="pb-2">
                     <CardDescription className="font-medium text-zinc-500">Active Disruption Events</CardDescription>
-                    <CardTitle className="text-3xl font-bold tracking-tight">2</CardTitle>
+                    <CardTitle className="text-3xl font-bold tracking-tight">{activeEventCount}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                     <p className="text-xs text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded-full w-fit">Hyderabad, Delhi</p>
+                     <p className="text-xs text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded-full w-fit">
+                       {events.filter(e => e.status === "Active").slice(0, 2).map(e => e.city).join(", ")}
+                       {activeEventCount > 2 ? ` +${activeEventCount - 2}` : ''}
+                     </p>
                   </CardContent>
                 </Card>
                 <Card className="shadow-sm border-zinc-200">
                   <CardHeader className="pb-2">
                     <CardDescription className="font-medium text-zinc-500">Total Payouts (YTD)</CardDescription>
-                    <CardTitle className="text-3xl font-bold tracking-tight">₹1.4Cr</CardTitle>
+                    <CardTitle className="text-3xl font-bold tracking-tight">{formatINR(payoutsYtd)}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-zinc-500 font-medium">Across 18,200 automated claims</p>
+                    <p className="text-xs text-zinc-500 font-medium">Across {totalClaims.toLocaleString()} automated claims</p>
                   </CardContent>
                 </Card>
                 <Card className="bg-zinc-950 text-white border-zinc-800 shadow-md">
@@ -165,10 +224,13 @@ export default function AdminDashboard() {
                         <CardTitle className="text-xl">Live Event Triggers</CardTitle>
                         <CardDescription className="mt-1">External API boundaries currently breached and processing payouts.</CardDescription>
                       </div>
-                      <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 shadow-sm font-bold px-3 py-1">2 Active</Badge>
+                      <div className="flex gap-3 items-center">
+                         <Button onClick={triggerNewEvent} className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-8 text-xs">Simulate Event</Button>
+                         <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 shadow-sm font-bold px-3 py-1">{activeEventCount} Active</Badge>
+                      </div>
                     </CardHeader>
                     <CardContent className="p-0 border-t border-zinc-100">
-                      {MOCK_EVENTS.map((event, i) => (
+                      {events.map((event, i) => (
                         <div key={event.id} className={`p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 ${i !== 0 ? 'border-t border-zinc-100' : ''} hover:bg-zinc-50/50 transition-colors`}>
                           <div className="flex items-start md:items-center gap-4">
                             <div className={`p-3 rounded-2xl shrink-0 border ${
@@ -216,7 +278,12 @@ export default function AdminDashboard() {
                       <CardDescription className="text-red-800/70 mt-1">AI-flagged claims requiring manual review prior to processing.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0 bg-white">
-                      {MOCK_FRAUD_LOGS.map((log, i) => (
+                      {fraudLogs.length === 0 ? (
+                        <div className="p-8 text-center text-zinc-500">
+                           <CheckCircle2 className="w-8 h-8 mx-auto text-green-500 mb-2 opacity-50" />
+                           <p className="text-sm font-medium">All anomalies resolved.</p>
+                        </div>
+                      ) : fraudLogs.map((log, i) => (
                         <div key={log.id} className={`p-5 ${i !== 0 ? 'border-t border-zinc-100' : ''}`}>
                           <div className="flex justify-between items-start mb-3">
                              <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider bg-red-50 text-red-700 border-red-200">{log.type}</Badge>
@@ -224,8 +291,11 @@ export default function AdminDashboard() {
                           </div>
                           <p className="text-sm text-zinc-700 mb-4 leading-relaxed font-medium">{log.details}</p>
                           <div className="flex items-center justify-between text-xs bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
-                            <span className="text-zinc-600 font-bold">Conf: {log.confidence}</span>
-                            <span className="text-red-600 font-bold">{log.action}</span>
+                            <div>
+                              <span className="text-zinc-600 font-bold mr-2">Conf: {log.confidence}</span>
+                              <span className="text-red-600 font-bold">{log.action}</span>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => resolveFraudLog(log.id)} className="h-6 px-2 text-blue-600 hover:text-blue-800 hover:bg-blue-100 font-bold">Resolve</Button>
                           </div>
                         </div>
                       ))}
@@ -266,7 +336,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-100">
-                    {MOCK_WORKERS.map((worker) => (
+                    {workers.map((worker) => (
                       <tr key={worker.id} className="hover:bg-zinc-50/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="font-bold text-zinc-950 text-base">{worker.name}</div>
