@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   const triggerNewEvent = () => {
     // 1. Create a new event
     const newEvent = {
-       id: `EV-MUM-${Math.floor(Math.random() * 100)}`,
+       id: `EV-MUM-${Date.now()}`,
        type: "Rainstorm",
        city: "Mumbai",
        severity: "Critical (80mm/hr)",
