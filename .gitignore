@@ -1,0 +1,54 @@
+# Web Applications
+web-app/
+*-web/
+*-frontend/
+frontend/
+
+# Mobile Applications
+mobile-app/
+*-mobile/
+app/
+android/
+ios/
+
+# Machine Learning & AI
+ml/
+machine-learning/
+ai/
+models/
+notebooks/
+*.ipynb
+
+# Backend & Other Services
+services/
+*-service/
+backend/
+api/
+server/
+
+# Node/Bun/Python dependencies (just in case they are at root)
+node_modules/
+.npm/
+.yarn/
+.bun/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
