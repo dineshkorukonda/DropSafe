@@ -4,7 +4,7 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   CloudRain, ThermometerSun, AlertTriangle, ShieldCheck,
-  Banknote, CloudLightning, Activity, Server, Sparkles, Filter, Clock, Zap, Target, ArrowRight
+  Banknote, CloudLightning, Activity, Server, Filter, Clock, Zap, Target, ArrowRight
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +65,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-3xl text-zinc-500 max-w-2xl font-medium"
           >
-            AI-powered parametric income protection for India's 15M+ delivery partners.
+            AI-powered parametric income protection for India&apos;s 15M+ delivery partners.
           </motion.p>
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function Home() {
           <div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">The Hidden Crisis in the Gig Economy.</h2>
             <p className="text-lg text-zinc-600 leading-relaxed mb-6">
-              India's gig economy is scaling rapidly, powering platforms like Swiggy, Zomato, and Blinkit. These workers depend entirely on daily deliveries for their income.
+              India&apos;s gig economy is scaling rapidly, powering platforms like Swiggy, Zomato, and Blinkit. These workers depend entirely on daily deliveries for their income.
             </p>
             <p className="text-lg text-zinc-600 leading-relaxed mb-6">
               When heavy rainfall, extreme heat, or floods strike, deliveries slow down or stop completely. Unlike salaried employees, gig workers do not have a safety net,
@@ -128,7 +128,7 @@ export default function Home() {
                 <Activity className="w-10 h-10 text-zinc-900" />
               </div>
               <h3 className="text-xl font-bold mb-3">1. Constant Monitoring</h3>
-              <p className="text-zinc-600">We analyze live weather and hazard data within the worker's delivery zone.</p>
+              <p className="text-zinc-600">We analyze live weather and hazard data within the worker&apos;s delivery zone.</p>
             </div>
 
             <div className="relative z-10 flex flex-col items-center">
@@ -179,7 +179,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Dynamic Risk Profiling</h3>
-                  <p className="text-zinc-600">Premiums aren't flat. Our AI evaluates hyper-local weather risk and historical data for a specific delivery zone to generate a fair, personalized weekly premium for each worker.</p>
+                  <p className="text-zinc-600">Premiums aren&apos;t flat. Our AI evaluates hyper-local weather risk and historical data for a specific delivery zone to generate a fair, personalized weekly premium for each worker.</p>
                 </div>
               </CardContent>
             </Card>
@@ -248,7 +248,7 @@ export default function Home() {
                   <span className="font-semibold text-zinc-900">Scale Potential</span>
                   <span className="font-mono text-zinc-500">1M+ users</span>
                 </div>
-                <p className="text-sm">At just 10% market penetration of India's delivery workforce, DropSafe processes over ₹150Cr in micro-premiums annually.</p>
+                <p className="text-sm">At just 10% market penetration of India&apos;s delivery workforce, DropSafe processes over ₹150Cr in micro-premiums annually.</p>
               </div>
             </div>
           </div>
