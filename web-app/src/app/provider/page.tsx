@@ -17,7 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, Cell
 } from 'recharts';
 
 // Mock Data
@@ -195,7 +195,7 @@ export default function ProviderDashboard() {
                      <Bar dataKey="exposure" name="Risk Exposure Level" radius={[0, 4, 4, 0]}>
                        {
                          EXPOSURE_DATA.map((entry, index) => (
-                           <cell key={`cell-${index}`} fill={entry.exposure > 80 ? '#ef4444' : entry.exposure > 60 ? '#f59e0b' : '#3b82f6'} />
+                           <Cell key={`cell-${index}`} fill={entry.exposure > 80 ? '#ef4444' : entry.exposure > 60 ? '#f59e0b' : '#3b82f6'} />
                          ))
                        }
                      </Bar>
