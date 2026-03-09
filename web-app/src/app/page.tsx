@@ -1,14 +1,16 @@
 "use client";
 
-import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   CloudRain, ThermometerSun, AlertTriangle, ShieldCheck,
-  Banknote, CloudLightning, Activity, Server, Filter, Clock, Zap, Target, ArrowRight
+  Banknote, CloudLightning, Activity, Server, Filter, Clock, Zap, Target, ArrowRight,
+  ShieldAlert, Car, HeartPulse, Wrench, CheckCircle2, XCircle, Play, Database, Smartphone, Cpu, Globe
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { PhoneMockup } from "@/components/ui/phone-mockup";
 import { BrowserMockup } from "@/components/ui/browser-mockup";
 import {
@@ -38,6 +40,32 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.05], [1, 0.95]);
+
+  const [simulationLog, setSimulationLog] = useState<
+    { time: string; message: string; type: "info" | "success" | "warning" }[]
+  >([]);
+
+  const runSimulation = (eventType: string) => {
+    setSimulationLog([]); // Clear previous logs
+    
+    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+    const steps = async () => {
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Simulating ${eventType} trigger API...`, type: "info" }]);
+      await delay(800);
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Event Detected! Querying Gemini Risk Engine for severity.`, type: "warning" }]);
+      await delay(1200);
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Threshold Breached. Identifying affected delivery zones.`, type: "info" }]);
+      await delay(900);
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Verifying worker coverages in zone: Active (14,203 users).`, type: "success" }]);
+      await delay(1000);
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Calculating hourly income loss block.`, type: "info" }]);
+      await delay(700);
+      setSimulationLog(prev => [...prev, { time: new Date().toLocaleTimeString(), message: `Claim Engine: 14,203 claims generated autonomously. Payouts processed.`, type: "success" }]);
+    };
+    
+    steps();
+  };
 
   return (
     <div className="min-h-screen bg-white text-zinc-950 font-sans selection:bg-zinc-200">
@@ -147,6 +175,104 @@ export default function Home() {
               <p className="text-zinc-600">Claims are auto-triggered to compensate the worker for the estimated lost income block.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 3.1 HOW IT WORKS (Merged from Phase-1) */}
+      <section className="py-24 px-6 bg-zinc-50 border-t border-zinc-200">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold tracking-tight mb-16 text-center">The Autonomous Workflow.</h2>
+          <div className="relative">
+            <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-zinc-200 md:left-1/2 md:-ml-px" />
+            <div className="space-y-12 relative z-10">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="md:w-1/2 md:text-right pr-6 md:pr-12 hidden md:block">
+                  <h4 className="text-xl font-bold">1. Worker Onboarding</h4>
+                  <p className="text-zinc-600 mt-2">Workers register with Name, City, Platform & Avg. Earnings.</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold shrink-0 shadow-[0_0_0_8px_white] relative ml-0 md:ml-auto md:mr-auto z-10">1</div>
+                <div className="md:w-1/2 pl-6 md:pl-12 flex-1 md:hidden">
+                  <h4 className="text-xl font-bold">1. Worker Onboarding</h4>
+                  <p className="text-zinc-600 mt-2">Workers register with Name, City, Platform & Avg. Earnings.</p>
+                </div>
+                <div className="md:w-1/2 md:pl-12 hidden md:block text-zinc-400 text-sm font-mono">`POST /api/workers`<br/>`{'{ city, role, income }'}`</div>
+              </div>
+              <div className="flex flex-col items-start md:flex-row md:items-center gap-6">
+                <div className="md:w-1/2 md:text-right md:pr-12 hidden md:block text-zinc-400 text-sm font-mono">`GET /api/risk/premium`</div>
+                <div className="w-14 h-14 rounded-full bg-white border border-zinc-300 text-zinc-900 flex items-center justify-center font-bold shadow-[0_0_0_8px_white] shrink-0 relative z-10 ml-0 md:ml-auto md:mr-auto">2</div>
+                <div className="md:w-1/2 pl-6 md:pl-12 flex-1">
+                  <h4 className="text-xl font-bold">2. Risk Engine Rating</h4>
+                  <p className="text-zinc-600 mt-2">Calculates micro-duration premium based on history and location.</p>
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="md:w-1/2 md:text-right pr-6 md:pr-12 md:block">
+                  <h4 className="text-xl font-bold">3. Parametric Trigger</h4>
+                  <p className="text-zinc-600 mt-2">System polls external APIs. e.g. Rainfall &gt; 50mm hooks event.</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-red-500 text-white flex items-center justify-center font-bold shadow-[0_0_0_8px_white] shrink-0 relative z-10 ml-0 md:ml-auto md:mr-auto">3</div>
+                <div className="md:w-1/2 pl-6 md:pl-12 hidden md:block text-zinc-400 text-sm font-mono">`Webhook: Weather API`</div>
+              </div>
+              <div className="flex flex-col items-start md:flex-row md:items-center gap-6">
+                <div className="md:w-1/2 md:text-right md:pr-12 hidden md:block text-zinc-400 text-sm font-mono">`Verification Checksum`</div>
+                <div className="w-14 h-14 rounded-full bg-white border border-zinc-300 text-zinc-900 flex items-center justify-center font-bold shadow-[0_0_0_8px_white] shrink-0 relative z-10 ml-0 md:ml-auto md:mr-auto">4</div>
+                <div className="md:w-1/2 pl-6 md:pl-12 flex-1">
+                  <h4 className="text-xl font-bold">4. Fraud Detection</h4>
+                  <p className="text-zinc-600 mt-2">Verifies user location vs actual weather footprint.</p>
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="md:w-1/2 md:text-right pr-6 md:pr-12 md:block">
+                  <h4 className="text-xl font-bold">5. Automated Claim Engine</h4>
+                  <p className="text-zinc-600 mt-2">Estimates income block lost, pays out directly. Cycle complete.</p>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-[0_0_0_8px_white] shrink-0 relative z-10 ml-0 md:ml-auto md:mr-auto"><CheckCircle2 className="w-6 h-6" /></div>
+                <div className="md:w-1/2 pl-6 md:pl-12 hidden md:block text-zinc-400 text-sm font-mono">`POST /api/claims/execute`</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3.2 DISRUPTION TYPES (Merged from Phase-1) */}
+      <section className="py-24 px-6 max-w-6xl mx-auto border-b border-zinc-200">
+        <h3 className="text-4xl font-bold tracking-tight mb-16 text-center">What is Covered?</h3>
+        <div className="grid md:grid-cols-2 gap-8">
+          <Card className="border-green-200 bg-green-50/30 shadow-none">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-100 p-2 rounded-full text-green-700"><CheckCircle2 className="w-5 h-5" /></div>
+                <CardTitle className="text-green-900">Covered: External Disruptions</CardTitle>
+              </div>
+              <CardDescription className="text-green-800/80">Events outside the worker&apos;s control affecting entire geographic zones.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 font-medium text-green-900">
+                <li className="flex items-center gap-3"><CloudRain className="w-5 h-5 opacity-70" /> Heavy Rain & Flooding</li>
+                <li className="flex items-center gap-3"><ThermometerSun className="w-5 h-5 opacity-70" /> Extreme Heatwaves</li>
+                <li className="flex items-center gap-3"><AlertTriangle className="w-5 h-5 opacity-70" /> Severe Air Pollution (AQI)</li>
+                <li className="flex items-center gap-3"><ShieldAlert className="w-5 h-5 opacity-70" /> Curfews & Strikes</li>
+                <li className="flex items-center gap-3"><Globe className="w-5 h-5 opacity-70" /> Structural Delivery Zone Closure</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card className="border-red-200 bg-red-50/30 shadow-none">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-red-100 p-2 rounded-full text-red-700"><XCircle className="w-5 h-5" /></div>
+                <CardTitle className="text-red-900">Not Covered: Individual Incidents</CardTitle>
+              </div>
+              <CardDescription className="text-red-800/80">Traditional insurance models already handle single-person incidents.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 font-medium text-red-900">
+                <li className="flex items-center gap-3"><Car className="w-5 h-5 opacity-70" /> Road Accidents</li>
+                <li className="flex items-center gap-3"><HeartPulse className="w-5 h-5 opacity-70" /> Medical Claims & Hospitalization</li>
+                <li className="flex items-center gap-3"><HeartPulse className="w-5 h-5 opacity-70" /> Personal Health Insurance</li>
+                <li className="flex items-center gap-3"><Wrench className="w-5 h-5 opacity-70" /> Vehicle Damage or Breakdowns</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -358,46 +484,146 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. TECHNOLOGY STACK */}
-      <section className="py-32 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold tracking-tight mb-6">Powered by the Modern Web.</h2>
-        <p className="text-lg text-zinc-600 max-w-2xl mx-auto mb-16">
-          Cloud-native, highly available microservices working seamlessly to process risk events natively.
-        </p>
-
-        <BrowserMockup className="max-w-4xl text-left shadow-2xl shadow-zinc-200/60 border-zinc-200">
-          <div className="flex items-center gap-6 p-6 border-b border-zinc-100 bg-zinc-50/50">
-            <ShieldCheck className="w-8 h-8 text-zinc-900" />
-            <div>
-              <h3 className="font-bold text-xl text-zinc-900">Admin Intelligence Dashboard</h3>
-              <p className="text-sm text-zinc-500">Real-time mapping of disruption signals and policy evaluation</p>
+      {/* 8. ARCHITECTURE & TECH */}
+      <section className="py-24 px-6 bg-zinc-900 text-zinc-50 border-t border-zinc-800">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-16 item-start">
+            <div className="md:w-1/2">
+               <h3 className="text-4xl font-bold tracking-tight mb-8">Data Flow Framework</h3>
+               <div className="space-y-3">
+                 <div className="bg-zinc-950 p-5 rounded-[1.5rem] flex items-center gap-4 border border-zinc-800">
+                   <div className="bg-zinc-800 p-3 rounded-xl"><Smartphone className="w-6 h-6 text-zinc-300" /></div>
+                   <div>
+                     <p className="font-bold text-white text-lg">React Native / Next.js</p>
+                     <p className="text-zinc-400">Worker Interface & Admin Dashboards</p>
+                   </div>
+                 </div>
+                 <div className="flex justify-center text-zinc-600 py-1"><ArrowRight className="rotate-90 md:rotate-0 w-6 h-6" /></div>
+                 <div className="bg-zinc-950 p-5 rounded-[1.5rem] flex items-center gap-4 border border-zinc-800">
+                   <div className="bg-zinc-800 p-3 rounded-xl"><Server className="w-6 h-6 text-zinc-300" /></div>
+                   <div>
+                     <p className="font-bold text-white text-lg">Next.js 16 APIs (Node)</p>
+                     <p className="text-zinc-400">Claims & Parametric Trigger Logic Engine</p>
+                   </div>
+                 </div>
+                 <div className="flex gap-4 py-1">
+                   <div className="flex-1 flex justify-center text-zinc-600 pl-8"><ArrowRight className="rotate-90 md:rotate-135 w-6 h-6" /></div>
+                   <div className="flex-1 flex justify-center text-zinc-600 pr-8"><ArrowRight className="rotate-90 md:rotate-45 w-6 h-6" /></div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                   <div className="bg-zinc-950 border border-zinc-800 p-6 rounded-[1.5rem] text-center">
+                     <div className="bg-blue-950/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Cpu className="w-6 h-6 text-blue-400" /></div>
+                     <p className="font-bold text-white">Gemini AI</p>
+                     <p className="text-sm text-zinc-400 mt-1">Fraud / Severity Checks</p>
+                   </div>
+                   <div className="bg-zinc-950 border border-zinc-800 p-6 rounded-[1.5rem] text-center">
+                     <div className="bg-green-950/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Database className="w-6 h-6 text-green-400" /></div>
+                     <p className="font-bold text-white">Neon PostgreSQL</p>
+                     <p className="text-sm text-zinc-400 mt-1">Geospatial Validating</p>
+                   </div>
+                 </div>
+               </div>
+            </div>
+            
+            <div className="md:w-1/2">
+              <h3 className="text-4xl font-bold tracking-tight mb-8 mt-12 md:mt-0 pt-4">External Data Oracles</h3>
+              <div className="grid gap-4">
+                <div className="bg-zinc-800/50 border border-zinc-800 rounded-[1.5rem] p-6 flex gap-6 items-center">
+                    <div className="bg-zinc-700/50 p-4 rounded-2xl"><CloudRain className="w-8 h-8 text-blue-400" /></div>
+                    <div>
+                      <span className="font-bold text-xl text-white block mb-1">OpenWeatherMap API</span>
+                      <p className="text-zinc-400">Automated rainfall thresholds & live meteorological monitoring streams.</p>
+                    </div>
+                </div>
+                <div className="bg-zinc-800/50 border border-zinc-800 rounded-[1.5rem] p-6 flex gap-6 items-center">
+                    <div className="bg-zinc-700/50 p-4 rounded-2xl"><ThermometerSun className="w-8 h-8 text-orange-400" /></div>
+                    <div>
+                      <span className="font-bold text-xl text-white block mb-1">Meteostat API</span>
+                      <p className="text-zinc-400">Historical heat indexing integration for accurate micro-durational risk pricing.</p>
+                    </div>
+                </div>
+                <div className="bg-zinc-800/50 border border-zinc-800 rounded-[1.5rem] p-6 flex gap-6 items-center">
+                    <div className="bg-zinc-700/50 p-4 rounded-2xl"><ShieldAlert className="w-8 h-8 text-red-400" /></div>
+                    <div>
+                      <span className="font-bold text-xl text-white block mb-1">Mapbox GeoJSON</span>
+                      <p className="text-zinc-400">Curfew validations, urban boundary detection, and delivery zone footprinting.</p>
+                    </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="p-8 pb-12 flex gap-12 bg-white flex-col md:flex-row">
-            <div className="md:w-1/3 flex flex-col gap-6">
-              <div className="bg-zinc-100 h-24 rounded-xl flex items-center justify-center p-4 text-zinc-500 font-mono text-xs text-center border border-zinc-200">
-                [ Mapbox GeoGrid Matrix Loading ]
-              </div>
-              <div className="bg-zinc-100 h-32 rounded-xl p-4 border border-zinc-200 flex flex-col justify-center">
-                <div className="h-4 w-3/4 bg-zinc-300 rounded-full mb-3" />
-                <div className="h-4 w-1/2 bg-zinc-300 rounded-full mb-3" />
-                <div className="h-4 w-full bg-zinc-300 rounded-full" />
-              </div>
+        </div>
+      </section>
+
+      {/* 9. DEMO CTA / INTERACTIVE SIMULATION */}
+      <section className="py-24 px-6 max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 mb-4 px-4 py-1">Interactive Simulation</Badge>
+          <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Admin Trigger Engine.</h3>
+          <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Click an environmental event to simulate pushing a webhook into DropSafe&apos;s core engine, triggering the automated claims pipeline.</p>
+        </div>
+
+        <BrowserMockup className="shadow-2xl shadow-zinc-200/50 border-zinc-300 text-left bg-white">
+          <div className="flex bg-zinc-950 text-white p-4 items-center justify-between border-b border-zinc-800">
+            <div className="font-mono text-sm flex items-center gap-2"><Play className="w-4 h-4 text-green-400" /> dropsafe-admin - bash</div>
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-zinc-700" />
+              <div className="w-3 h-3 rounded-full bg-zinc-700" />
+              <div className="w-3 h-3 rounded-full bg-zinc-700" />
             </div>
-            <div className="md:w-2/3">
-              <h4 className="font-bold mb-4 flex items-center gap-2"><Server className="w-5 h-5 text-zinc-400" /> Core Infrastructure Stack</h4>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { name: "Next.js 16", desc: "Edge functions & APIs" },
-                  { name: "Neon PostgreSQL", desc: "Serverless Database" },
-                  { name: "Google Gemini", desc: "AI Risk Prediction" },
-                  { name: "React Native", desc: "Worker App" }
-                ].map((t) => (
-                  <div key={t.name} className="border border-zinc-200 p-4 rounded-xl bg-zinc-50 flex flex-col gap-1">
-                    <span className="font-bold text-zinc-900 leading-none">{t.name}</span>
-                    <span className="text-xs text-zinc-500">{t.desc}</span>
+          </div>
+          
+          <div className="bg-zinc-50 p-6 md:p-10 flex flex-col md:flex-row gap-8">
+            {/* Control Panel */}
+            <div className="md:w-1/3 bg-white p-6 rounded-[2rem] border border-zinc-200 shadow-sm flex flex-col pt-8">
+               <h4 className="font-bold text-xl mb-6 flex items-center gap-2"><Target className="w-6 h-6 text-zinc-400"/> Trigger Center</h4>
+               <div className="space-y-3 flex-1">
+                 <Button variant="outline" size="lg" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-colors" onClick={() => runSimulation("Rainstorm")}>
+                   <CloudRain className="w-5 h-5 mr-3" /> Execute Rainstorm
+                 </Button>
+                 <Button variant="outline" size="lg" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200 transition-colors" onClick={() => runSimulation("Heatwave")}>
+                   <ThermometerSun className="w-5 h-5 mr-3" /> Execute Heatwave
+                 </Button>
+                 <Button variant="outline" size="lg" className="w-full justify-start hover:bg-zinc-100 hover:border-zinc-300 transition-colors" onClick={() => runSimulation("Pollution")}>
+                   <AlertTriangle className="w-5 h-5 mr-3" /> Simulate Pollution Spike
+                 </Button>
+                 <Button variant="outline" size="lg" className="w-full justify-start hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-colors" onClick={() => runSimulation("Curfew")}>
+                   <ShieldAlert className="w-5 h-5 mr-3" /> Trigger Civilian Curfew
+                 </Button>
+               </div>
+            </div>
+
+            {/* Terminal Log Output */}
+            <div className="md:w-2/3 bg-zinc-950 rounded-[2rem] border border-zinc-800 p-8 font-mono text-sm text-zinc-300 overflow-y-auto h-[400px] shadow-inner">
+              <div className="mb-6 text-zinc-500 border-b border-zinc-800 pb-4">
+                -----------------------------------------------------<br/>
+                DropSafe Live Event Stream [System Listening...]<br/>
+                -----------------------------------------------------
+              </div>
+              
+              <div className="space-y-4">
+                <AnimatePresence>
+                  {simulationLog.map((log, i) => (
+                    <motion.div 
+                      initial={{ opacity: 0, x: -10 }} 
+                      animate={{ opacity: 1, x: 0 }} 
+                      exit={{ opacity: 0 }}
+                      key={i} 
+                      className="flex gap-4 items-start"
+                    >
+                      <span className="text-zinc-600 shrink-0">[{log.time}]</span>
+                      <span className={`leading-relaxed ${log.type === "success" ? "text-green-400 font-semibold" : log.type === "warning" ? "text-yellow-400" : "text-blue-300"}`}>
+                        {`>`} {log.message}
+                      </span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {simulationLog.length === 0 && (
+                  <div className="flex animate-pulse items-center gap-2 text-zinc-600 mt-4">
+                    <div className="w-2 h-4 bg-zinc-500" />
+                    <span>Waiting for external payload...</span>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
