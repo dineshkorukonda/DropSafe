@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# web-app
+
+Next.js application for the DropSafe web experience and backend APIs.
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies.
+2. Copy `.env.example` to `.env.local`.
+3. Set `DATABASE_URL` to your Neon connection string.
+4. Run the development server.
 
 ```bash
+cp .env.example .env.local
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Auth routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/auth/signup`
+- `/auth/login`
+- `/dashboard`
 
-## Learn More
+The auth backend uses:
 
-To learn more about Next.js, take a look at the following resources:
+- Neon Postgres via `@neondatabase/serverless`
+- `bcryptjs` for password hashing
+- `nodemailer` for verification and reset emails
+- HTTP-only cookie sessions stored in a `sessions` table
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The auth layer now also creates:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `email_verification_tokens`
+- `password_reset_tokens`
+- `onboarding_profiles`
 
-## Deploy on Vercel
+These tables are created automatically on first auth request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Neon setup
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a Neon project, then use its pooled connection string in `DATABASE_URL`, for example:
+
+```env
+DATABASE_URL=postgresql://user:password@ep-example.ap-southeast-1.aws.neon.tech/dropsafe?sslmode=require
+APP_URL=http://localhost:3000
+SMTP_HOST=smtp.resend.com
+SMTP_PORT=587
+SMTP_USER=resend
+SMTP_PASS=your_smtp_password
+SMTP_FROM=DropSafe <no-reply@dropsafe.app>
+```
+
+If SMTP is not configured, verification and reset links are logged to the server console as a development fallback.
