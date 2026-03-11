@@ -6,6 +6,8 @@ import { PasswordInput } from "@/components/auth/password-input";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { isPasswordResetTokenValid } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const errors: Record<string, string> = {
   missing_fields: "Fill in the password fields before continuing.",
   weak_password: "Use at least 8 characters for the new password.",

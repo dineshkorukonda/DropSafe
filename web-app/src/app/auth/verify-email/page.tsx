@@ -9,6 +9,8 @@ import { AuthShell } from "@/app/auth/auth-shell";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { getCurrentUser } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const errors: Record<string, string> = {
   invalid_token: "That verification link is invalid or has expired.",
   missing_email: "Enter an email address to resend the verification link.",

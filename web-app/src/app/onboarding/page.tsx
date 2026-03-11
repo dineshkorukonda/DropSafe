@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCurrentUser, getOnboardingProfile } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const errors: Record<string, string> = {
   missing_fields: "Complete all fields in this step before continuing.",
 };

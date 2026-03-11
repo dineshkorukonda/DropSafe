@@ -4,6 +4,8 @@ import { forgotPasswordAction } from "@/app/auth/actions";
 import { AuthShell } from "@/app/auth/auth-shell";
 import { SubmitButton } from "@/components/auth/submit-button";
 
+export const dynamic = "force-dynamic";
+
 const errors: Record<string, string> = {
   missing_email: "Enter your account email to continue.",
 };

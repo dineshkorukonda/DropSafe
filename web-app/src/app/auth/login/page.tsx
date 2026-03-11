@@ -7,6 +7,8 @@ import { PasswordInput } from "@/components/auth/password-input";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { getCurrentUser } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const loginErrors: Record<string, string> = {
   missing_fields: "Enter both email and password.",
   invalid_credentials: "The email or password is incorrect.",

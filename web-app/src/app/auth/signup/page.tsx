@@ -7,6 +7,8 @@ import { PasswordInput } from "@/components/auth/password-input";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { getCurrentUser } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const signupErrors: Record<string, string> = {
   missing_fields: "Fill in all fields before continuing.",
   weak_password: "Use at least 8 characters for the password.",
