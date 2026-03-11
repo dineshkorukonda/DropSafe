@@ -1,0 +1,18 @@
+[project]
+name = "dropsafe-llm-services"
+version = "0.1.0"
+description = "Gemini-backed LLM services for DropSafe."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116.0,<1.0.0",
+  "google-genai>=1.0.0,<2.0.0",
+  "pydantic-settings>=2.10.0,<3.0.0",
+  "uvicorn[standard]>=0.35.0,<1.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
