@@ -15,14 +15,25 @@ export type UserRecord = {
   id: string;
   email: string;
   full_name: string;
+  role: "user" | "admin";
   email_verified_at: string | null;
   onboarding_completed_at: string | null;
 };
 
 let schemaReady: Promise<void> | null = null;
+const ADMIN_EMAILS = new Set(
+  (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => normalizeEmail(email))
+    .filter(Boolean)
+);
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
+}
+
+function resolveRole(email: string): UserRecord["role"] {
+  return ADMIN_EMAILS.has(normalizeEmail(email)) ? "admin" : "user";
 }
 
 function hashSessionToken(token: string) {
@@ -60,6 +71,11 @@ async function ensureAuthSchema() {
       await sql`
         ALTER TABLE users
         ADD COLUMN IF NOT EXISTS onboarding_completed_at TIMESTAMPTZ
+      `;
+
+      await sql`
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user'
       `;
 
       await sql`
@@ -129,12 +145,13 @@ export async function createUser(input: {
 
   const email = normalizeEmail(input.email);
   const passwordHash = await hash(input.password, 12);
+  const role = resolveRole(email);
 
   try {
     const rows = (await sql`
-      INSERT INTO users (id, email, full_name, password_hash)
-      VALUES (${randomUUID()}, ${email}, ${input.fullName.trim()}, ${passwordHash})
-      RETURNING id, email, full_name, email_verified_at, onboarding_completed_at
+      INSERT INTO users (id, email, full_name, password_hash, role)
+      VALUES (${randomUUID()}, ${email}, ${input.fullName.trim()}, ${passwordHash}, ${role})
+      RETURNING id, email, full_name, role, email_verified_at, onboarding_completed_at
     `) as UserRecord[];
     return rows[0];
   } catch (error) {
@@ -150,7 +167,7 @@ export async function verifyUserCredentials(email: string, password: string) {
   await ensureAuthSchema();
 
   const rows = (await sql`
-    SELECT id, email, full_name, password_hash, email_verified_at, onboarding_completed_at
+    SELECT id, email, full_name, role, password_hash, email_verified_at, onboarding_completed_at
     FROM users
     WHERE email = ${normalizeEmail(email)}
     LIMIT 1
@@ -170,6 +187,7 @@ export async function verifyUserCredentials(email: string, password: string) {
     id: user.id,
     email: user.email,
     full_name: user.full_name,
+    role: user.role,
     email_verified_at: user.email_verified_at,
     onboarding_completed_at: user.onboarding_completed_at,
   };
@@ -224,7 +242,7 @@ export async function getCurrentUser() {
   }
 
   const rows = (await sql`
-    SELECT users.id, users.email, users.full_name, users.email_verified_at, users.onboarding_completed_at
+    SELECT users.id, users.email, users.full_name, users.role, users.email_verified_at, users.onboarding_completed_at
     FROM sessions
     INNER JOIN users ON users.id = sessions.user_id
     WHERE sessions.token_hash = ${hashSessionToken(token)}
@@ -239,7 +257,7 @@ export async function getUserByEmail(email: string) {
   await ensureAuthSchema();
 
   const rows = (await sql`
-    SELECT id, email, full_name, email_verified_at, onboarding_completed_at
+    SELECT id, email, full_name, role, email_verified_at, onboarding_completed_at
     FROM users
     WHERE email = ${normalizeEmail(email)}
     LIMIT 1
@@ -272,7 +290,7 @@ export async function verifyEmailToken(token: string) {
   await ensureAuthSchema();
 
   const rows = (await sql`
-    SELECT users.id, users.email, users.full_name, users.email_verified_at, users.onboarding_completed_at
+    SELECT users.id, users.email, users.full_name, users.role, users.email_verified_at, users.onboarding_completed_at
     FROM email_verification_tokens
     INNER JOIN users ON users.id = email_verification_tokens.user_id
     WHERE email_verification_tokens.token_hash = ${hashSessionToken(token)}
