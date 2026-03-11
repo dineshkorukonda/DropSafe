@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AuthShell } from "@/app/auth/auth-shell";
@@ -92,12 +91,6 @@ export default async function SignupPage({
         ) : null}
         <SubmitButton idleLabel="Create account" pendingLabel="Creating account..." />
       </form>
-      <div className="mt-5 text-sm text-zinc-500">
-        Already verified and onboarded?{" "}
-        <Link href="/auth/login" className="font-semibold text-zinc-900 underline-offset-4 hover:underline">
-          Sign in
-        </Link>
-      </div>
     </AuthShell>
   );
 }

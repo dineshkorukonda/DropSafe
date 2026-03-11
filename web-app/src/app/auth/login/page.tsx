@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AuthShell } from "@/app/auth/auth-shell";
@@ -78,15 +77,9 @@ export default async function LoginPage({
         <SubmitButton idleLabel="Sign in" pendingLabel="Signing in..." />
       </form>
       <div className="mt-5 flex items-center justify-between gap-3 text-sm text-zinc-500">
-        <Link href="/auth/forgot-password" className="font-semibold text-zinc-900 underline-offset-4 hover:underline">
+        <a href="/auth/forgot-password" className="font-semibold text-zinc-900 underline-offset-4 hover:underline">
           Forgot password?
-        </Link>
-      </div>
-      <div className="mt-3 text-sm text-zinc-500">
-        New here?{" "}
-        <Link href="/auth/signup" className="font-semibold text-zinc-900 underline-offset-4 hover:underline">
-          Create your account
-        </Link>
+        </a>
       </div>
     </AuthShell>
   );
