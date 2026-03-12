@@ -8,6 +8,7 @@ DropSafe is organized as a monorepo with three main applications and services:
 
 ```text
 dropsafe/
+├── docs/
 ├── web-app/
 ├── mobile-app/
 └── llm-services/
@@ -67,6 +68,7 @@ DropSafe is designed for hackathon execution with a practical architecture:
 ## Repository Notes
 
 - The current implemented app lives in [`/web-app`](/Users/dinexh/Developer/DropSafe/web-app).
-- Supporting monorepo directories for mobile and LLM services are scaffolded for the next build phase.
-- The updated technical specification is in [`/dropsafe_technical_spec.md`](/Users/dinexh/Developer/DropSafe/dropsafe_technical_spec.md).
-
+- The mobile starter now lives in [`/mobile-app`](/Users/dinexh/Developer/DropSafe/mobile-app).
+- Product docs live in [`/docs`](/Users/dinexh/Developer/DropSafe/docs).
+- The product exploration is in [`/docs/product-exploration.md`](/Users/dinexh/Developer/DropSafe/docs/product-exploration.md).
+- The updated technical specification is in [`/docs/technical-spec.md`](/Users/dinexh/Developer/DropSafe/docs/technical-spec.md).
