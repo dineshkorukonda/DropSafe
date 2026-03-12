@@ -1,10 +1,24 @@
 # mobile-app
 
-React Native / Expo mobile client for DropSafe workers.
+Expo mobile client scaffold for DropSafe.
 
-Planned responsibilities:
-- onboarding and authentication
-- policy dashboard
-- coverage purchase
-- claims submission
-- payout and transaction visibility
+## Included screens
+
+- `app/index.tsx`: get started screen
+- `app/login.tsx`: login screen
+
+## Run locally
+
+```bash
+cd mobile-app
+npm install
+npm run start
+```
+
+You can also use:
+
+```bash
+npm run android
+npm run ios
+npm run web
+```
